@@ -1,8 +1,11 @@
 import os
 import operator
 import phoenix as px
+import logging
+
 from dotenv import load_dotenv  
-from phoenix.otel import register  
+from phoenix.otel import register
+
 from pathlib import Path   
 from typing import TypedDict, Annotated, Sequence
 from typing_extensions import TypedDict
@@ -15,36 +18,34 @@ from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 
-from persistent_memory.memory import get_session_history, clear_session_history   
-from toolsuite.toolkit import calculate, summarize_text, search_knowledge_base, web_search
+# from memory import get_session_history, clear_session_history   # SQLite version
+from memory_postgres import get_session_history, clear_session_history # PostgreSQL version
+from toolkit import calculate, summarize_text, search_knowledge_base, web_search
 from pii_guardrail import OutputGuardrails
 from prompt_guardrail import InputGuardrails
+
+# Logging Configuration------------------------------------------------------------------------------------------------------------------------
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # PII Guardrail Initialization---------------------------------------------------------------------------------------------------------------
 output_guardrails = OutputGuardrails()
 input_guardrails = InputGuardrails()
 
 # Monitoring Setup ----------------------------------------------------------------------------------------------------------------------------
-DB_PATH = Path("./phoenix_data/phoenix.db").absolute()
-DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+os.environ["PHOENIX_SQL_DATABASE_URL"] = "postgresql://monitor_user:monitor_password@localhost:5432/monitor_history_db"
 
-os.environ["PHOENIX_SQL_DATABASE_URL"] = f"sqlite:///{DB_PATH}"
-os.environ["PHOENIX_WORKING_DIR"] = str(DB_PATH.parent)
-
-session = px.launch_app(
-    host="0.0.0.0",
-    port=6006
-)
+session = px.launch_app()
+print(f"Phoenix UI available at: {session.url}")
 
 tracer_provider = register(
-    project_name="Onpremise_LLM_Agent",
+    project_name="onprem_agent",
     endpoint="http://localhost:6006/v1/traces",
     auto_instrument=True,
+    batch=True
 )
-
 # =============================================================================================================================================
 load_dotenv()
-SQLITE_DB_PATH ="chat_history.db"
 FAISS_INDEX_PATH = "faiss_index"
 
 #Azure Components Initialization - LLM, Embeddings, Vector Store, Memory----------------------------------------------------------------------
@@ -94,10 +95,7 @@ tools = [calculate, summarize_text, search_knowledge_base, web_search]
 
 # Create ToolNode - this replaces ToolExecutor and individual tool nodes
 tool_node = ToolNode(tools)
-# prompt = ChatPromptTemplate.from_messages([
-#     ("system", "You are a helpful AI assistant specializing in {domain}."),
-#     ("human", "{user_input}")
-# ])
+
 # LangGraph State Definition
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], operator.add]
