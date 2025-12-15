@@ -89,6 +89,7 @@ There are four files used here.
 - To view the persistent memory database file .db, please use https://inloop.github.io/sqlite-viewer/.
 
 # Next Steps:
+- Interactive viewers for Postgres Dashboards
 - Expand guardrail implementation
 - Cache frequently accessed embeddings or LLM responses.
 - Might expand the toolkit for product/ finance/ location search, etc.
@@ -98,6 +99,7 @@ There are four files used here.
 - Change to Strucutred RAG over simple RAG. (Graph RAG can be an option but preferable for SQL vector database as querying is more efficient).
 - Include a frontend webapp via StreamLit or Gradio --or better React or Next. If simpler, just an html based one is also good.
 - Improved prompting - I did not find this necessary as it really depends on data quality as well.
+
 
 
 
