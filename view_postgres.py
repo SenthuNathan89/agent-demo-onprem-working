@@ -7,7 +7,7 @@ DB_CONFIG = {
     "port": 5432,
     "user": "postgres",
     "password": "postgres",
-    "database": "chat_history_db"
+    "database": "phoenix_db"
 }
 
 def list_tables():
@@ -95,4 +95,5 @@ if __name__ == "__main__":
     
     # View each table
     for table in tables:
-        view_table(table, limit=10)
+        table_info(table)
+        view_table(table, limit=25)
