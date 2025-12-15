@@ -13,21 +13,21 @@ cursor = conn.cursor()
 
 # Create the database
 try:
-    cursor.execute("CREATE DATABASE chat_history_db;") # Change databvase name if needed
-    print("Database 'chat_history_db' created successfully")
+    cursor.execute("CREATE DATABASE monitor_history_db;") # Change databvase name if needed
+    print("Database 'monitor_history_db' created successfully")
 except psycopg2.errors.DuplicateDatabase:
-    print("Database 'chat_history_db' already exists")
+    print("Database 'monitor_history_db' already exists")
 
 # Create the user
 try:
-    cursor.execute("CREATE USER chat_user WITH PASSWORD 'your_password';") # Change username and password if needed
-    print("User 'chat_user' created successfully")
+    cursor.execute("CREATE USER monitor_user WITH PASSWORD 'monitor_password';") # Change username and password if needed
+    print("User 'monitor_user' created successfully")
 except psycopg2.errors.DuplicateObject:
-    print("User 'chat_user' already exists")
+    print("User 'monitor_user' already exists")
 
 # Grant privileges
-cursor.execute("GRANT ALL PRIVILEGES ON DATABASE chat_history_db TO chat_user;") # Change privilege if needed
-print("Privileges granted to 'chat_user'")
+cursor.execute("GRANT ALL PRIVILEGES ON DATABASE monitor_history_db TO monitor_user;") # Change privilege if needed
+print("Privileges granted to 'monitor_user'")
 
 # Close connection
 cursor.close()
