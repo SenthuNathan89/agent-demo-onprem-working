@@ -59,6 +59,7 @@ def search_result(vector_store, query: str, k: int = 2):
     for i, result in enumerate(source_results, 1):
         print(f"Source: {result['source']}")
         print(f"Title: {result['title']}")
-        print(f"Metadata: {result['metadata']}")
+        print("\n")
+
 
     return source_results
