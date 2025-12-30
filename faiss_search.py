@@ -34,8 +34,6 @@ def initialize_faiss_vector_store():
         print(f"Error initializing FAISS: {e}")
         raise
 
-
-
 def search_result(vector_store, query: str, k: int = 2):
     # Perform similarity search on the FAISS vector store
     if vector_store is None:
@@ -50,10 +48,17 @@ def search_result(vector_store, query: str, k: int = 2):
         result_detail={
             "content": doc.page_content,
             "metadata": doc.metadata,
-            "score": score
+            "score": score,
+            "source":doc.metadata.get('source'),
+            "title":doc.metadata.get('title')
         }
         source_results.append(result_detail)
 
-        print(f"\n Full metadata: {doc.metadata}\n")
-        # print(f"Content: {doc.page_content}\n")
+    print(f"Results:")
+    print(f"{'='*100}")
+    for i, result in enumerate(source_results, 1):
+        print(f"Source: {result['source']}")
+        print(f"Title: {result['title']}")
+        print(f"Metadata: {result['metadata']}")
+
     return source_results
