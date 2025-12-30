@@ -30,7 +30,7 @@ llm = AzureChatOpenAI(
 # )
 
 
-#  Define Tools - Mathematical Calculation, Text Summarization, Knowledge Base Search------------------------------------------------------------------------------
+# Define Tools - Mathematical Calculation, Text Summarization, Knowledge Base Search------------------------------------------------------------------------------
 @tool
 def calculate(expression: str) -> str:
     "Performs mathematical calculations. Input should be a valid Python math expression."
@@ -49,7 +49,7 @@ def summarize_text(text: str) -> str:
 
 @tool
 def search_knowledge_base(query: str) -> str:
-    """Searches the Azure AI Search vector database for relevant information."""
+    "Searches the Azure AI Search vector database for relevant information."
     vector_store = initialize_faiss_vector_store()
     results = search_result(vector_store, query, k=2)
     if not results:
@@ -69,7 +69,13 @@ def web_search(query: str,  num_results: int = 3) -> str:
                 max_results=3,
                 search_depth="basic"  # or "advanced" for more thorough search
             )
-        print(response)
+        print(f"\n Sources from Tavily Web Search ({len(response)} total):")
+        print("*"*100 +"\n")
+        for result in response['results']:
+            print(result['url'])
+        
         return response['results']
+
     except ValueError as e:
         print(f"{e}")
+
